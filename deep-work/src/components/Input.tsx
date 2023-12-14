@@ -2,6 +2,10 @@ import React, { useState } from "react";
 import Body from "./Body";
 import uuid from "react-uuid";
 import styled from "styled-components";
+import { useDispatch, useSelector } from "react-redux";
+import { addTodo, deleteTodo, switchTodo } from "../redux/modules/todoSlice";
+// import { RootState } from "../redux/configStore/configStore";
+
 
 export type Addto = {
   id: string;
@@ -11,6 +15,9 @@ export type Addto = {
 };
 
 const Input: React.FC = () => {
+const data = useSelector((state)=> state.todoSlice)
+console.log('data',data);
+  const dispatch = useDispatch();
   const [title, setTitle] = useState<string>(``);
 
   const [content, setContent] = useState<string>(``);
@@ -31,26 +38,26 @@ const Input: React.FC = () => {
       content: content,
       isDone: false,
     };
-    setAddToBody([...addToBody, newTodo]);
+    dispatch(addTodo(newTodo));
     setTitle("");
     setContent("");
   };
 
   const deletHandler = (id: string) => {
     if (window.confirm("삭제 하시겠습니까?")) {
-      const deleteBody = addToBody.filter((i) => i.id !== id);
-      setAddToBody(deleteBody);
+      // const deleteBody = addToBody.filter((i) => i.id !== id);
+     dispatch(deleteTodo(id))
     }
     return;
   };
 
   const switchHandler = (id: string) => {
-    const addToBodys = addToBody.map((addToBody) =>
-      addToBody.id === id
-        ? { ...addToBody, isDone: !addToBody.isDone }
-        : addToBody
-    );
-    setAddToBody(addToBodys);
+    // const addToBodys = addToBody.map((addToBody) =>
+    //   addToBody.id === id
+    //     ? { ...addToBody, isDone: !addToBody.isDone }
+    //     : addToBody
+    // );
+    dispatch(switchTodo(id));
   };
 
 
