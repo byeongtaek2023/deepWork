@@ -8,7 +8,7 @@ const todoSlice = createSlice({
   initialState,
   reducers: {
     addTodo: (state, action:PayloadAction<Addto>) => {
-   return [...state,action.payload]}
+    return state.concat(action.payload)}
     ,
 
     deleteTodo: (state, action:PayloadAction<String>) => {

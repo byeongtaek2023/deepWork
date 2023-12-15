@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Body from "./Body";
 import uuid from "react-uuid";
 import styled from "styled-components";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addTodo, deleteTodo, switchTodo } from "../redux/modules/todoSlice";
-
-
+import { json } from "../axios/todo";
 
 export type Addto = {
   id: string;
@@ -15,17 +14,17 @@ export type Addto = {
 };
 
 export type RootState = {
-  todoSlice: Addto[]; 
+  todoSlice: Addto[];
 };
 
 const Input: React.FC = () => {
-
   const dispatch = useDispatch();
 
   const [title, setTitle] = useState<string>(``);
 
   const [content, setContent] = useState<string>(``);
 
+const data = useSelector((state:RootState)=>state.todoSlice)
 
   const titleHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
@@ -34,35 +33,57 @@ const Input: React.FC = () => {
     setContent(e.target.value);
   };
 
-  const addPostHandler = () => {
+
+  const addPostHandler = async () => {
     const newTodo = {
       id: uuid(),
       title: title,
       content: content,
       isDone: false,
     };
+    try {
+      await json.post("/todos", newTodo);
+    } catch {
+      console.log("post error");
+    }
+  
     dispatch(addTodo(newTodo));
     setTitle("");
     setContent("");
   };
 
-  const deletHandler = (id: string) => {
+   
+  useEffect(()=>{
+    async function lender() {
+      const responses:Addto = (await json.get("/todos")).data;
+      console.log(responses)
+      dispatch(addTodo(responses));
+    }
+  lender();
+  },[])
+  
+
+  const deletHandler = async(id: string) => {
     if (window.confirm("삭제 하시겠습니까?")) {
-     dispatch(deleteTodo(id))
+      await json.delete(`/todos/${id}`);
+      dispatch(deleteTodo(id));
     }
     return;
   };
 
-  const switchHandler = (id: string) => {
+  const switchHandler = async(id: string) => {
+    await json.patch(`/todos/${id}`, { isDone: true });
     dispatch(switchTodo(id));
+    
+
   };
 
-
-  const handleEnterPress = (e:React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
+  const handleEnterPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
       addPostHandler();
     }
   };
+
 
   return (
     <div>
@@ -71,17 +92,17 @@ const Input: React.FC = () => {
           <label>제목</label>
           <input value={title} onChange={titleHandler} />
           <label>내용</label>
-          <input value={content} onChange={contentHandler} onKeyDown={handleEnterPress} />
+          <input
+            value={content}
+            onChange={contentHandler}
+            onKeyDown={handleEnterPress}
+          />
         </div>
         <div>
-          <button onClick={addPostHandler} >추가하기</button>
+          <button onClick={addPostHandler}>추가하기</button>
         </div>
       </InputWarp>
-      <Body
-
-        deletHandler={deletHandler}
-        switchHandler={switchHandler}
-      />
+      <Body deletHandler={deletHandler} switchHandler={switchHandler} />
     </div>
   );
 };
@@ -89,10 +110,10 @@ const Input: React.FC = () => {
 export default Input;
 
 const InputWarp = styled.div`
-display : flex;
-align-content: center;
-jutifiy-content: center;
-justify-content: space-between;
-background-color: #adb5bd;
-height:40px;
-`
+  display: flex;
+  align-content: center;
+  jutifiy-content: center;
+  justify-content: space-between;
+  background-color: #adb5bd;
+  height: 40px;
+`;

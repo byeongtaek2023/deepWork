@@ -20,7 +20,14 @@ Todo LV2
 - Todo를 Create, Delete, Update(완료/취소)가 가능해야 합니다.
 - Lv1의 코드를 고쳐서 만듭니다.
 
-### Keyword
+
+
+Todo Lv3
+
+- Lv3의 과제에서 json-server를 추가합니다.
+- Todo를 Create, Delete, Update(완료/취소),  Read(From Json-server)가 가능해야 합니다.
+- Lv2의 코드를 고쳐서 만듭니다.
+
 
 전역 상태 관리, redux
   

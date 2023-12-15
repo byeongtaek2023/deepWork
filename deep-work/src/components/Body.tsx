@@ -19,12 +19,12 @@ height: 150px;
 
 const Body:React.FC<{ deletHandler:(id:string)=>void; switchHandler:(id:string)=>void;}> = ({ deletHandler,switchHandler}) => {
   const data = useSelector((state:RootState)=> state.todoSlice)
+  // console.log('data',data);
   
   return <div>
           <div>
           <h1>Working...</h1>
         <WorkingSt>
-          
           {data?.map((item) => {
             if (!item.isDone) {
               return (
