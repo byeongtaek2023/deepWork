@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import { Addto } from "./Input";
+import { RootState } from "./Input";
+import { useSelector } from "react-redux";
 
 
 const WorkingSt = styled.div`
@@ -16,14 +17,15 @@ height: 150px;
 
 `
 
-const Body:React.FC<{addToBody:Addto[]; deletHandler:(id:string)=>void; switchHandler:(id:string)=>void;}> = ({ addToBody,deletHandler,switchHandler}) => {
-
+const Body:React.FC<{ deletHandler:(id:string)=>void; switchHandler:(id:string)=>void;}> = ({ deletHandler,switchHandler}) => {
+  const data = useSelector((state:RootState)=> state.todoSlice)
+  
   return <div>
           <div>
           <h1>Working...</h1>
         <WorkingSt>
           
-          {addToBody?.map((item) => {
+          {data?.map((item) => {
             if (!item.isDone) {
               return (
                 <WorkingStIn>
@@ -42,7 +44,7 @@ const Body:React.FC<{addToBody:Addto[]; deletHandler:(id:string)=>void; switchHa
         <div>
           <h1>Done...</h1>
           <WorkingSt>
-          {addToBody?.map((item) => {
+          {data?.map((item) => {
             if (item.isDone) {
               return (
                 <WorkingStIn>

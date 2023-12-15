@@ -1,4 +1,4 @@
-Todo LV1
+Todo lV1
  React 및 Typescript 이용 Todolist
 - **Todo 항목 추가 하기**
     - 사용자가 새로운 Todo 항목을 입력하고 추가 할 수 있는 기능.
@@ -14,4 +14,15 @@ Todo의 isDone 상태가 true이면, 상태 버튼의 라벨을 취소, isDone�
 Todo의 상태가 Working 이면 위쪽에 위치하고, Done이면 아래쪽에 위치하도록 구현합니다.
 Layout의 최대 넓이는 1200px, 최소 넓이는 800px로 제한하고, 전체 화면의 가운데로 정렬해주세요.
    
-   위 내용들 구현완료
+
+Todo LV2
+- React + redux-toolkit를 이용한 TodoList를 만듭니다.
+- Todo를 Create, Delete, Update(완료/취소)가 가능해야 합니다.
+- Lv1의 코드를 고쳐서 만듭니다.
+
+### Keyword
+
+전역 상태 관리, redux
+  
+  
+ 위 내용들 구현완료

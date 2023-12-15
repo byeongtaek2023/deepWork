@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import Body from "./Body";
 import uuid from "react-uuid";
 import styled from "styled-components";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { addTodo, deleteTodo, switchTodo } from "../redux/modules/todoSlice";
-// import { RootState } from "../redux/configStore/configStore";
+
 
 
 export type Addto = {
@@ -14,15 +14,18 @@ export type Addto = {
   isDone: boolean;
 };
 
+export type RootState = {
+  todoSlice: Addto[]; 
+};
+
 const Input: React.FC = () => {
-const data = useSelector((state)=> state.todoSlice)
-console.log('data',data);
+
   const dispatch = useDispatch();
+
   const [title, setTitle] = useState<string>(``);
 
   const [content, setContent] = useState<string>(``);
 
-  const [addToBody, setAddToBody] = useState<Addto[]>([]);
 
   const titleHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
@@ -45,18 +48,12 @@ console.log('data',data);
 
   const deletHandler = (id: string) => {
     if (window.confirm("삭제 하시겠습니까?")) {
-      // const deleteBody = addToBody.filter((i) => i.id !== id);
      dispatch(deleteTodo(id))
     }
     return;
   };
 
   const switchHandler = (id: string) => {
-    // const addToBodys = addToBody.map((addToBody) =>
-    //   addToBody.id === id
-    //     ? { ...addToBody, isDone: !addToBody.isDone }
-    //     : addToBody
-    // );
     dispatch(switchTodo(id));
   };
 
@@ -81,7 +78,7 @@ console.log('data',data);
         </div>
       </InputWarp>
       <Body
-        addToBody={addToBody}
+
         deletHandler={deletHandler}
         switchHandler={switchHandler}
       />
