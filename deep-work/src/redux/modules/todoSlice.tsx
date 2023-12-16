@@ -16,6 +16,18 @@ export const __getTodos = createAsyncThunk(
   }
 );
 
+export const __addTodos = createAsyncThunk(
+  "Todo/addTodos",
+  async (payload:Addto, thunkAPI) => {
+    try {
+
+      return thunkAPI.fulfillWithValue(payload);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
 
 export const __deleteTodo = createAsyncThunk(
   "Todo/deleteTodo",
@@ -67,20 +79,43 @@ const todoSlice = createSlice({
     .addCase(__getTodos.rejected, (state, action) => {
       return console.log('__getTodos error')
     })
+
+    //__addTodos
+    .addCase(__addTodos.fulfilled, (state, action) => {
+      const add = [...state, action.payload];
+      async function addPost() {
+        await json.post("/todos", add);
+      }
+      addPost();
+      return
+    })
+
+    .addCase(__addTodos.rejected, (state, action) => {
+      return console.log('__getTodos error')
+    })
+
     //deleteTodo
     .addCase(__deleteTodo.fulfilled, (state, action) => {
-      return state.filter((item: Addto) => item.id !== action.payload);
+      // const delteId =  state.filter((item: Addto) => item.id !== action.payload);
+     async function deletePost() {
+      await json.delete(`/todos/${action.payload}`);
+     }
+    deletePost();
+      return
     })
     .addCase(__deleteTodo.rejected, (state, action) => {
       return console.log('__deleteTodo error')
     })
+
     //switchTodo
     .addCase(__switchTodo.fulfilled, (state, action) => {
-      return state.map((state: Addto) =>
-        state.id === action.payload
-          ? { ...state, isDone: !state.isDone }
-          : state
-      );
+      async function swap() {    
+        const currentIsDone = state.find(todo => todo.id === action.payload)?.isDone;
+        await json.patch(`/todos/${action.payload}`, { isDone: !currentIsDone });
+      }
+      swap();
+      return 
+
     })
     .addCase(__switchTodo.rejected, (state, action) => {
       return console.log('__deleteTodo error')

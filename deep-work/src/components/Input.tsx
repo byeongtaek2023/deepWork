@@ -3,7 +3,7 @@ import Body from "./Body";
 import uuid from "react-uuid";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import { addTodo, deleteTodo, switchTodo } from "../redux/modules/todoSlice";
+import { __addTodos, __deleteTodo, __getTodos, __switchTodo, addTodo, deleteTodo, switchTodo } from "../redux/modules/todoSlice";
 import { json } from "../axios/todo";
 
 export type Addto = {
@@ -24,7 +24,7 @@ const Input: React.FC = () => {
 
   const [content, setContent] = useState<string>(``);
 
-// const data = useSelector((state:RootState)=>state.todoSlice)
+const data = useSelector((state:RootState)=>state.todoSlice)
 
   const titleHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
@@ -33,15 +33,6 @@ const Input: React.FC = () => {
     setContent(e.target.value);
   };
 
-  useEffect(()=>{
-    async function lender() {
-      const responses:Addto = (await json.get("/todos")).data;
-      console.log(responses)
-      dispatch(addTodo(responses));
-    }
-  lender();
-  },[])
-  
 
   const addPostHandler = async () => {
     const newTodo = {
@@ -50,28 +41,41 @@ const Input: React.FC = () => {
       content: content,
       isDone: false,
     };
-    try {
-      await json.post("/todos", newTodo);
-    } catch {
-      console.log("post error");
-    }
+    // try {
+    //   await json.post("/todos", newTodo);
+    // } catch {
+    //   console.log("post error");
+    // }
   
-    dispatch(addTodo(newTodo));
+    dispatch(__addTodos(newTodo)as any);
     setTitle("");
     setContent("");
   };
 
- 
+   
+  useEffect(()=>{
+    async function lender() {
+      const responses:Addto = (await json.get("/todos")).data;
+      console.log(responses)
+      dispatch(__getTodos()as any);
+    }
+  lender();
+  },[])
+  
 
-  const deletHandler = (id: string) => {
+  const deletHandler = async(id: string) => {
     if (window.confirm("삭제 하시겠습니까?")) {
-      dispatch(deleteTodo(id));
+      // await json.delete(`/todos/${id}`);
+      dispatch(__deleteTodo(id)as any);
     }
     return;
   };
 
-  const switchHandler = (id: string) => {
-    dispatch(switchTodo(id));
+  const switchHandler = async(id: string) => {
+    // await json.patch(`/todos/${id}`, { isDone: true });
+    dispatch(__switchTodo(id)as any);
+    
+
   };
 
   const handleEnterPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -79,6 +83,7 @@ const Input: React.FC = () => {
       addPostHandler();
     }
   };
+
 
   return (
     <div>
@@ -112,3 +117,5 @@ const InputWarp = styled.div`
   background-color: #adb5bd;
   height: 40px;
 `;
+
+
