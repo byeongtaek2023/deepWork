@@ -24,7 +24,7 @@ const Input: React.FC = () => {
 
   const [content, setContent] = useState<string>(``);
 
-const data = useSelector((state:RootState)=>state.todoSlice)
+// const data = useSelector((state:RootState)=>state.todoSlice)
 
   const titleHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
@@ -33,6 +33,15 @@ const data = useSelector((state:RootState)=>state.todoSlice)
     setContent(e.target.value);
   };
 
+  useEffect(()=>{
+    async function lender() {
+      const responses:Addto = (await json.get("/todos")).data;
+      console.log(responses)
+      dispatch(addTodo(responses));
+    }
+  lender();
+  },[])
+  
 
   const addPostHandler = async () => {
     const newTodo = {
@@ -52,30 +61,17 @@ const data = useSelector((state:RootState)=>state.todoSlice)
     setContent("");
   };
 
-   
-  useEffect(()=>{
-    async function lender() {
-      const responses:Addto = (await json.get("/todos")).data;
-      console.log(responses)
-      dispatch(addTodo(responses));
-    }
-  lender();
-  },[])
-  
+ 
 
-  const deletHandler = async(id: string) => {
+  const deletHandler = (id: string) => {
     if (window.confirm("삭제 하시겠습니까?")) {
-      await json.delete(`/todos/${id}`);
       dispatch(deleteTodo(id));
     }
     return;
   };
 
-  const switchHandler = async(id: string) => {
-    await json.patch(`/todos/${id}`, { isDone: true });
+  const switchHandler = (id: string) => {
     dispatch(switchTodo(id));
-    
-
   };
 
   const handleEnterPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -83,7 +79,6 @@ const data = useSelector((state:RootState)=>state.todoSlice)
       addPostHandler();
     }
   };
-
 
   return (
     <div>
