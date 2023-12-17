@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
-import Body from "./Body";
+import React, { useEffect, useRef } from "react";
+
 import uuid from "react-uuid";
 import styled from "styled-components";
-import { useDispatch, useSelector } from "react-redux";
-import { __addTodos, __deleteTodo, __getTodos, __switchTodo, addTodo, deleteTodo, switchTodo } from "../redux/modules/todoSlice";
-import { json } from "../axios/todo";
+
+import { addTodo, deleteTodo, getTodos, switchTodo } from "../api/todoList";
+import Body from "./Body";
+import { useMutation, useQueryClient } from "react-query";
 
 export type Addto = {
   id: string;
@@ -13,69 +14,76 @@ export type Addto = {
   isDone: boolean;
 };
 
-export type RootState = {
-  todoSlice: Addto[];
-};
-
 const Input: React.FC = () => {
-  const dispatch = useDispatch();
 
-  const [title, setTitle] = useState<string>(``);
+  const titleInpuRef = useRef<HTMLInputElement>(null);
 
-  const [content, setContent] = useState<string>(``);
-
-const data = useSelector((state:RootState)=>state.todoSlice)
-
-  const titleHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTitle(e.target.value);
-  };
-  const contentHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setContent(e.target.value);
-  };
-
+  const contextInpuRef = useRef<HTMLInputElement>(null);
 
   const addPostHandler = async () => {
+
+    const title = titleInpuRef.current?.value || "";
+
+    const context = contextInpuRef.current?.value || "";
+
     const newTodo = {
       id: uuid(),
       title: title,
-      content: content,
+      content: context,
       isDone: false,
     };
-    // try {
-    //   await json.post("/todos", newTodo);
-    // } catch {
-    //   console.log("post error");
-    // }
-  
-    dispatch(__addTodos(newTodo)as any);
-    setTitle("");
-    setContent("");
+
+    mutation.mutate(newTodo);
+
+    if (titleInpuRef.current) {
+      titleInpuRef.current.value = "";
+    }
+
+    if (contextInpuRef.current) {
+      contextInpuRef.current.value = "";
+    }
   };
 
-   
-  useEffect(()=>{
-    async function lender() {
-      const responses:Addto = (await json.get("/todos")).data;
-      console.log(responses)
-      dispatch(__getTodos()as any);
-    }
-  lender();
-  },[])
-  
+  useEffect(() => {
+    const fetchData = async () => {
+      await getTodos();
+    };
+    fetchData();
+  }, []);
 
-  const deletHandler = async(id: string) => {
+
+  const queryClient = useQueryClient();
+  
+  //addTodo 무효화
+  const mutation = useMutation(addTodo, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("todo");
+    },
+  });
+  
+  //deleteTodo 무효화
+  const mutation2 = useMutation(deleteTodo, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("todo");
+    },
+  });
+
+  //switchTodo 무효화
+  const mutation3 = useMutation(switchTodo, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("todo");
+    },
+  });
+
+  const deletHandler = async (id: string) => {
     if (window.confirm("삭제 하시겠습니까?")) {
-      // await json.delete(`/todos/${id}`);
-      dispatch(__deleteTodo(id)as any);
+      mutation2.mutate(id);
     }
     return;
   };
 
-  const switchHandler = async(id: string) => {
-    // await json.patch(`/todos/${id}`, { isDone: true });
-    dispatch(__switchTodo(id)as any);
-    
-
+  const switchHandler = async (id: Addto) => {
+    mutation3.mutate(id);
   };
 
   const handleEnterPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -84,19 +92,15 @@ const data = useSelector((state:RootState)=>state.todoSlice)
     }
   };
 
-
   return (
     <div>
       <InputWarp>
         <div>
           <label>제목</label>
-          <input value={title} onChange={titleHandler} />
+          <input ref={titleInpuRef}   onKeyDown={handleEnterPress} />
+
           <label>내용</label>
-          <input
-            value={content}
-            onChange={contentHandler}
-            onKeyDown={handleEnterPress}
-          />
+          <input ref={contextInpuRef} onKeyDown={handleEnterPress} />
         </div>
         <div>
           <button onClick={addPostHandler}>추가하기</button>
@@ -117,5 +121,3 @@ const InputWarp = styled.div`
   background-color: #adb5bd;
   height: 40px;
 `;
-
-
