@@ -9,14 +9,14 @@ const WorkingSt = styled.div`
 display: flex;
 `
 
-const WorkingStIn = styled.div`
-display: flex;
-background-color: #495057;
+// const WorkingStIn = styled.div`
+// display: flex;
+// background-color: #495057;
 
-margin-left: 10px;
-max-width: 150px;
-height: 150px;
-`
+// margin-left: 10px;
+// max-width: 150px;
+// height: 150px;
+// `
 
 
 const Body:React.FC<{ deletHandler:(id:string)=>void; switchHandler:(id:Addto)=>void;}> = ({ deletHandler,switchHandler}) => {
