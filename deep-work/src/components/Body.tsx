@@ -14,7 +14,11 @@ display: flex;
 const Body:React.FC<{ deletHandler:(id:string)=>void; switchHandler:(id:Addto)=>void;}> = ({ deletHandler,switchHandler}) => {
   
 //데이터 가져오기 
-  const { isLoading, isError, data} =  useQuery('todo',getTodos)
+  const { isLoading, isError, data} =  useQuery('todo',getTodos
+  ,{
+    retry: 3 ,
+    staleTime: 6000
+  })
 console.log('bodyData',data)
 
 

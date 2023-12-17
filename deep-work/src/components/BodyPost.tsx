@@ -24,7 +24,7 @@ const BodyPost: React.FC<{
           <div>내용:{item.content}</div>
           <button onClick={() => deletHandler(item.id)}>삭제</button>
           <button onClick={() => switchHandler(item)}>
-            {item.isDone ? "완료" : "취소"}
+            {item.isDone ? "취소":"완료" }
           </button>
         </div>
       </WorkingStIn>
