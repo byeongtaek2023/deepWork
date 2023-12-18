@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 import { Addto } from "../components/Input";
 
-// 모든 todos를 가져오는 api
+// 모든 todos를 가져오는 api!!
 const getTodos = async ():Promise<Addto[]> => {
   const response:AxiosResponse<Addto[]> = await axios.get(`${process.env.REACT_APP_SERVER_URL}`);
 
