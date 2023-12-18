@@ -12,7 +12,7 @@ height:30px;
 const Header = () => {
   return (
     <HeaderLayer>
-        <div>MY TodoList!!</div>
+        <div>MY TodoList</div>
         <div>React</div>
     </HeaderLayer>
   )
