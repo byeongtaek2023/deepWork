@@ -8,7 +8,20 @@ import BodyPost from "./BodyPost";
 const WorkingSt = styled.div`
 display: flex;
 `
+const BodyPostContainer = styled.div`
+  background-color: #f8f9fa;
+  border: 1px solid #ced4da;
+  border-radius: 8px;
+  padding: 10px;
+  margin: 10px;
+  width: 200px;
 
+  & button {
+    margin-top: 8px;
+    padding: 4px 8px;
+    cursor: pointer;
+  }
+`;
 
 
 const Body:React.FC<{ deletHandler:(id:string)=>void; switchHandler:(id:Addto)=>void;}> = ({ deletHandler,switchHandler}) => {
@@ -41,7 +54,9 @@ console.log('bodyData',data)
           {data?.map((item:Addto) => {
             if (!item.isDone) {
               return (
+                <BodyPostContainer>
             <BodyPost item={item} deletHandler={deletHandler}  switchHandler={switchHandler}/>
+            </BodyPostContainer>
               );
             } 
           })}
@@ -53,7 +68,9 @@ console.log('bodyData',data)
           {data?.map((item:Addto) => {
             if (item.isDone) {
               return (
+                <BodyPostContainer>
                 <BodyPost item={item} deletHandler={deletHandler}  switchHandler={switchHandler}/>
+                </BodyPostContainer>
               );
             }
           })}

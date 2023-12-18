@@ -15,17 +15,24 @@ export type Addto = {
 };
 
 const Input: React.FC = () => {
-
   const titleInpuRef = useRef<HTMLInputElement>(null);
 
   const contextInpuRef = useRef<HTMLInputElement>(null);
 
   const addPostHandler = async () => {
-
     const title = titleInpuRef.current?.value || "";
 
     const context = contextInpuRef.current?.value || "";
 
+    if (!title.trim()) {
+      alert("제목을 입력해 주세요");
+      return;
+    }
+
+    if (!context.trim()) {
+      alert("내용을 입력해 주세요");
+      return;
+    }
     const newTodo = {
       id: uuid(),
       title: title,
@@ -51,16 +58,15 @@ const Input: React.FC = () => {
     fetchData();
   }, []);
 
-
   const queryClient = useQueryClient();
-  
+
   //addTodo 무효화
   const mutation = useMutation(addTodo, {
     onSuccess: () => {
       queryClient.invalidateQueries("todo");
     },
   });
-  
+
   //deleteTodo 무효화
   const mutation2 = useMutation(deleteTodo, {
     onSuccess: () => {
@@ -97,7 +103,7 @@ const Input: React.FC = () => {
       <InputWarp>
         <div>
           <label>제목</label>
-          <input ref={titleInpuRef}   onKeyDown={handleEnterPress} />
+          <input ref={titleInpuRef} onKeyDown={handleEnterPress} />
 
           <label>내용</label>
           <input ref={contextInpuRef} onKeyDown={handleEnterPress} />
